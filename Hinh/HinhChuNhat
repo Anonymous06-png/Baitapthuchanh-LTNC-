@@ -1,0 +1,117 @@
+using System;
+
+namespace ConsoleApp1.Hinh
+{
+    public class HinhChuNhat : Hinh
+    {
+        private double chieuDai;
+        private double chieuRong;
+
+        public double ChieuDai
+        {
+            get
+            {
+                return chieuDai;
+            }
+
+            set
+            {
+                if (value > 0)
+                {
+                    chieuDai = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Chieu dai phai lon hon 0.");
+                }
+            }
+        }
+
+        public double ChieuRong
+        {
+            get
+            {
+                return chieuRong;
+            }
+
+            set
+            {
+                if (value > 0)
+                {
+                    chieuRong = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Chieu rong phai lon hon 0.");
+                }
+            }
+        }
+
+        // Constructor mặc định
+        public HinhChuNhat()
+        {
+            chieuDai = 1;
+            chieuRong = 1;
+        }
+
+        // Constructor có tham số
+        public HinhChuNhat(double chieuDai, double chieuRong)
+        {
+            ChieuDai = chieuDai;
+            ChieuRong = chieuRong;
+        }
+
+        public double GetDienTich()
+        {
+            return ChieuDai * ChieuRong;
+        }
+
+        public double GetChuVi()
+        {
+            return (ChieuDai + ChieuRong) * 2;
+        }
+
+        public void Nhap()
+        {
+            double dai;
+            double rong;
+
+            do
+            {
+                Console.Write("Nhap chieu dai: ");
+
+                if (double.TryParse(Console.ReadLine(), out dai) && dai > 0)
+                {
+                    ChieuDai = dai;
+                    break;
+                }
+
+                Console.WriteLine("Chieu dai phai lon hon 0.");
+
+            } while (true);
+
+            do
+            {
+                Console.Write("Nhap chieu rong: ");
+
+                if (double.TryParse(Console.ReadLine(), out rong) && rong > 0)
+                {
+                    ChieuRong = rong;
+                    break;
+                }
+
+                Console.WriteLine("Chieu rong phai lon hon 0.");
+
+            } while (true);
+        }
+
+        public void HienThi()
+        {
+            Console.WriteLine("===== HINH CHU NHAT =====");
+            Console.WriteLine($"Chieu dai: {ChieuDai}");
+            Console.WriteLine($"Chieu rong: {ChieuRong}");
+            Console.WriteLine($"Dien tich: {GetDienTich():F2}");
+            Console.WriteLine($"Chu vi: {GetChuVi():F2}");
+        }
+    }
+}
