@@ -1,61 +1,78 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-
-namespace ExampleCAdvance.Hinh;
-
-public class Circle : Shape
+namespace ConsoleApp1.Hinh
 {
-    private double radius;
-
-    public double Radius
+    public class HinhTron : Hinh
     {
-        get => radius;
-        set
+        private double banKinh;
+
+        public double BanKinh
         {
-            if (value < 0)
+            get
             {
-                throw new ArgumentException("Radius cannot be negative.");
+                return banKinh;
             }
-            radius = value;
+
+            set
+            {
+                if (value > 0)
+                {
+                    banKinh = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Ban kinh phai lon hon 0.");
+                }
+            }
         }
-    }
 
-    // Vietnamese alias if needed in coursework
-    public double BanKinh
-    {
-        get => Radius;
-        set => Radius = value;
-    }
+        // Constructor mặc định
+        public HinhTron()
+        {
+            banKinh = 1;
+        }
 
-    public Circle() : base("Circle")
-    {
-        Radius = 0;
-    }
+        // Constructor có tham số
+        public HinhTron(double banKinh)
+        {
+            BanKinh = banKinh;
+        }
 
-    public Circle(double radius) : base("Circle")
-    {
-        Radius = radius;
-    }
+        public double GetDienTich()
+        {
+            return Math.PI * BanKinh * BanKinh;
+        }
 
-    public Circle(string name, double radius) : base(name)
-    {
-        Radius = radius;
-    }
+        public double GetChuVi()
+        {
+            return 2 * Math.PI * BanKinh;
+        }
 
-    public override double Tinhdientich()
-    {
-        return Math.PI * radius * radius;
-    }
+        public void Nhap()
+        {
+            double r;
 
-    public override double Tinhchuvi()
-    {
-        return 2 * Math.PI * radius;
-    }
+            do
+            {
+                Console.Write("Nhap ban kinh: ");
 
-    public override void DisplayInfo()
-    {
-        Console.WriteLine($"Circle [{Name}] - Radius: {Radius}, Area: {Tinhdientich():F2}, Perimeter: {Tinhchuvi():F2}");
+                if (double.TryParse(Console.ReadLine(), out r) && r > 0)
+                {
+                    BanKinh = r;
+                    break;
+                }
+
+                Console.WriteLine("Ban kinh phai lon hon 0.");
+
+            } while (true);
+        }
+
+        public void HienThi()
+        {
+            Console.WriteLine("===== HINH TRON =====");
+            Console.WriteLine($"Ban kinh: {BanKinh}");
+            Console.WriteLine($"Dien tich: {GetDienTich():F2}");
+            Console.WriteLine($"Chu vi: {GetChuVi():F2}");
+        }
     }
 }
