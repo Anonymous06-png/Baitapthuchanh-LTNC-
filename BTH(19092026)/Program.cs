@@ -7,11 +7,7 @@ namespace StudentManagement
         static void Main(string[] args)
         {
             StudentDAO studentDAO = new StudentDAO();
-
-
-            // =========================
-            // ADD
-            // =========================
+            
 
             Student s1 = new Student(
                 "SV001",
@@ -38,11 +34,7 @@ namespace StudentManagement
             studentDAO.Add(s1);
             studentDAO.Add(s2);
             studentDAO.Add(s3);
-
-
-            // =========================
-            // GET ALL
-            // =========================
+            
 
             Console.WriteLine("DANH SACH SINH VIEN");
 
@@ -51,11 +43,7 @@ namespace StudentManagement
                 Console.WriteLine(student);
             }
 
-
-            // =========================
-            // GET BY ID
-            // =========================
-
+            
             Console.WriteLine("\nTIM SINH VIEN CO ID = SV002");
 
             Student findStudent = studentDAO.GetById("SV002");
@@ -69,10 +57,7 @@ namespace StudentManagement
                 Console.WriteLine("Khong tim thay sinh vien.");
             }
 
-
-            // =========================
-            // GET BY NAME
-            // =========================
+            
 
             Console.WriteLine("\nTIM SINH VIEN CO TEN NGUYEN");
 
@@ -81,10 +66,7 @@ namespace StudentManagement
                 Console.WriteLine(student);
             }
 
-
-            // =========================
-            // EDIT
-            // =========================
+            
 
             Student studentEdit = new Student(
                 "SV002",
@@ -111,10 +93,7 @@ namespace StudentManagement
                 Console.WriteLine(student);
             }
 
-
-            // =========================
-            // DELETE
-            // =========================
+            
 
             if (studentDAO.Delete("SV001"))
             {
