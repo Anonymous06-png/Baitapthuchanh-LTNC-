@@ -1,11 +1,16 @@
-# Fix đổi MSSV không làm mất bản nháp
+# Thay đổi v3
 
-File code duy nhất thay đổi so với v2: Presentation/MainForm.cs.
+## Tra cứu mã sinh viên
 
-Nếu đã đưa bài lên GitHub trong BTH 10-10, chỉ cần thay file MainForm.cs ở Presentation bằng file bản v3 này, giữ nguyên cấu trúc solution và .git của repo. Có thể cập nhật thêm tài liệu đi kèm. Không tạo repository mới.
+- Giữ các trường chi tiết khi đổi mã trong lúc thêm sinh viên mới.
+- Xóa mã để nhập lại không làm mất bản nháp.
+- Khi có bản nháp và mã mới trùng một sinh viên đã lưu, yêu cầu xác nhận trước khi nạp bản ghi đó. Lựa chọn mặc định là No.
+- Tra cứu trên form trống vẫn nạp sinh viên đã có như trước.
 
-Nguyên nhân: txtMaSV.Leave gọi TraCuuMa; nhánh mã không tồn tại gọi XoaThongTinChiTiet, khiến bản nháp bị xóa mỗi lần đổi mã.
+## Các hành vi giữ nguyên
 
-Fix: bỏ thao tác xóa ở nhánh mã không tồn tại, giữ trạng thái thêm; bổ sung hỏi xác nhận khi có bản nháp nhưng mã mới trùng sinh viên đã lưu.
+- Làm mới và lưu thành công xóa form nhập.
+- Business kiểm tra mã trùng trước khi thêm.
+- Mã sinh viên đã lưu không được thay đổi trong chế độ sửa.
 
-Phạm vi: đổi MSSV trong khi nhập sinh viên mới. Không thay đổi MSSV của bản ghi đã lưu.
+Thành phần thay đổi: `Presentation/MainForm.cs`, các phương thức `TraCuuMa()` và `CoThongTinDangNhap()`.

@@ -1,38 +1,46 @@
-# Checklist chạy trên Visual Studio/Windows
+# Kiểm thử
 
-Các bước dưới đây là hướng dẫn kiểm thử thủ công, không phải tuyên bố đã chạy UI.
+## Kiểm thử tự động
 
-1. Mở solution, đặt Presentation làm startup, F5. Mong đợi 4 sinh viên, 3 lớp ở combobox; Thêm bật, Sửa/Xóa tắt.
-2. Chọn “Kỹ thuật phần mềm 01” trong “Lọc lớp”. Mong đợi 2 sinh viên SV000123 và SV000125.
-3. Chọn lớp AI01. Mong đợi SV000124. Chọn “Tất cả lớp” để quay lại 4 hàng.
-4. Nhập `SV000123`, nhấn Tab. Mong đợi thông tin Nguyễn Văn An, mã khóa, Sửa/Xóa bật.
-5. Bấm “Làm mới”, nhập `SV999999`, Tab. Các chi tiết phải trống; ngày sinh bỏ chọn; giữ mã mới để thêm.
-6. Chỉ nhập mã rồi Thêm. Kiểm tra biểu tượng lỗi ở tên, ngày, giới tính, email, điện thoại, điểm, lớp và trạng thái.
-7. Điền dữ liệu hợp lệ nhưng email `abc`. Mong đợi lỗi cạnh email, danh sách không đổi.
-8. Nhập điểm `abc`, rồi `11`, rồi để trống. Mỗi trường hợp đều phải bị chặn; nhập `8,5` hoặc `8.5` phải đọc được.
-9. Chọn ngày hôm nay hoặc tương lai. Mong đợi lỗi ngày sinh.
-10. Thêm một sinh viên hợp lệ. Chọn đúng lớp ở bộ lọc để nhìn thấy. Họ tên có nhiều khoảng trắng sẽ được Business chuẩn hóa.
-11. Chọn sinh viên mới, sửa lớp sang lớp khác và bấm Sửa. Bấm No không thay đổi; Yes cập nhật. Kiểm tra sĩ số ở cửa sổ “Quản lý lớp”.
-12. Xóa sinh viên: No giữ nguyên, Yes xóa. Bấm Làm mới: form nhập rỗng nhưng không mất danh sách.
-13. “Hiển thị tất cả”, chọn “Tìm trên giao diện”, nhập từ khóa `An` và Tìm kiếm. Xóa từ khóa rồi tìm lại để lấy toàn bộ danh sách đã tải.
-14. “Hiển thị tất cả”, chọn “Tìm tại nguồn DataList”, lọc lớp KTPM01 và điểm từ 8. Mong đợi Nguyễn Văn An (trước khi dữ liệu mẫu bị thay đổi).
-15. Chạy tìm tại nguồn ra một kết quả; đổi sang tìm trên giao diện. Nhánh giao diện chỉ tìm trong snapshot đã tải này. Chọn lại lớp/Hiển thị tất cả để tải lại.
-16. “Quản lý lớp”: thêm lớp trống, sửa tên, xóa lớp trống; thử xóa KTPM01 đang có sinh viên → phải bị chặn.
-17. Đóng ứng dụng rồi chạy lại. Dữ liệu mẫu được khởi tạo lại vì DataList chỉ lưu trong bộ nhớ.
+Chạy tại thư mục solution:
 
-18. Tab từ ô mã: tên → lớp → ngày sinh → nhóm giới tính → điểm → email → điện thoại → trạng thái → các nút CRUD. Trong nhóm giới tính dùng phím mũi tên để chọn Nam/Nữ.
-19. Bấm Đóng hoặc X của cửa sổ chính: No giữ cửa sổ, Yes thoát. Mặc định là No.
-20. Để trống nhiều trường và nhập điểm `abc`, bấm Thêm: phải xuất hiện đồng thời lỗi chuỗi điểm và lỗi các trường còn thiếu.
-21. Tra mã của sinh viên thuộc lớp khác: combobox lớp và danh sách hiển thị phải đồng bộ với lớp sinh viên đó.
+```powershell
+dotnet run --project Tests/QuanLySinhVien.Tests.csproj -c Release
+```
 
+Các kiểm thử tập trung vào validation, CRUD, tìm kiếm, quan hệ lớp–sinh viên và tính độc lập của bản sao dữ liệu khi đọc.
 
-## Kiểm thử hồi quy v3: đổi mã khi đang thêm
+## Kiểm thử giao diện
 
-22. Làm mới, nhập mã mới SV999999, Tab, điền tất cả thông tin. Quay lại ô mã đổi thành SV999998, Tab. Tất cả chi tiết phải giữ nguyên. Bấm Thêm để lưu với mã mới.
-23. Điền bản nháp, xóa mã rồi Tab. Chi tiết vẫn còn. Bấm Thêm phải báo lỗi mã; không được xóa bản nháp.
-24. Khi có bản nháp, đổi mã thành SV000123, Tab. Hộp thoại phải xuất hiện. No giữ toàn bộ bản nháp và báo mã trùng; đổi sang mã mới rồi Thêm vẫn phải lưu được.
-25. Lặp lại bước 24 và chọn Yes: phải nạp Nguyễn Văn An, khóa ô mã, bật Sửa/Xóa và tắt Thêm.
-26. Form trống sau Làm mới: nhập SV000123, Tab → nạp ngay sinh viên cũ, không cần xác nhận vì không có bản nháp.
-27. Nhấn Làm mới và thêm thành công: vẫn xóa các ô nhập như trước. Sinh viên đã lưu vẫn không cho đổi MSSV trực tiếp ở chế độ Sửa.
+Thực hiện trên Windows. Các kịch bản dưới đây mô tả kết quả mong đợi, không thay thế báo cáo kết quả thực thi.
 
-Các bước này cần chạy thực tế trên Windows; kiểm thử console không kiểm tra control Windows Forms.
+| STT | Thao tác | Kết quả mong đợi |
+|---|---|---|
+| 1 | Khởi động ứng dụng | Hiển thị 4 sinh viên mẫu và 3 lớp; Thêm bật, Sửa/Xóa tắt; focus ô mã |
+| 2 | Chọn Kỹ thuật phần mềm 01 | Hiển thị SV000123 và SV000125 trên dữ liệu mẫu |
+| 3 | Chọn AI01 | Hiển thị SV000124 trên dữ liệu mẫu |
+| 4 | Nhập SV000123, nhấn Tab | Nạp thông tin, khóa mã; Sửa/Xóa bật, Thêm tắt |
+| 5 | Làm mới, nhập mã chưa có | Giữ trạng thái thêm; chưa có thông tin chi tiết |
+| 6 | Bấm Thêm khi thiếu thông tin | ErrorProvider báo các trường bắt buộc |
+| 7 | Nhập email hoặc điện thoại sai | Báo lỗi đúng ô, không ghi dữ liệu |
+| 8 | Nhập điểm bằng chữ, để trống hoặc ngoài 0–10 | Chặn thêm/sửa và báo lỗi điểm |
+| 9 | Nhập điểm 8.5 hoặc 8,5 | Đọc đúng giá trị 8,5 |
+| 10 | Chọn ngày sinh hôm nay hoặc tương lai | Báo lỗi ngày sinh |
+| 11 | Thêm một sinh viên hợp lệ | Danh sách nguồn tăng một bản ghi; form được làm mới |
+| 12 | Sửa thông tin hoặc chuyển lớp | No giữ dữ liệu cũ; Yes cập nhật và thay đổi sĩ số tương ứng |
+| 13 | Xóa sinh viên | No giữ bản ghi; Yes xóa bản ghi |
+| 14 | Tìm trên giao diện | Chỉ tìm trong danh sách đã tải, không nạp lại từ nguồn |
+| 15 | Tìm tại nguồn theo lớp, từ khóa và điểm | Kết quả thỏa đồng thời các điều kiện |
+| 16 | Bấm Hiển thị tất cả | Tải lại toàn bộ sinh viên, bỏ bộ lọc |
+| 17 | Thêm/sửa/xóa lớp trống | Thực hiện được; xóa lớp có sinh viên bị chặn |
+| 18 | Tab qua các ô nhập | Đi theo hàng từ trái sang phải, từ trên xuống dưới |
+| 19 | Bấm Đóng hoặc X cửa sổ chính | Có xác nhận; No giữ cửa sổ, Yes thoát |
+| 20 | Khởi động lại ứng dụng | Nạp lại dữ liệu mẫu vì nguồn nằm trong bộ nhớ |
+
+## Hồi quy khi đổi mã sinh viên mới
+
+1. Nhập mã mới và điền các trường chi tiết. Đổi sang một mã mới khác rồi nhấn Tab: các trường chi tiết phải được giữ.
+2. Xóa mã rồi nhấn Tab: không mất chi tiết. Bấm Thêm phải báo thiếu mã.
+3. Khi có bản nháp, đổi mã thành SV000123: phải hỏi xác nhận. No giữ bản nháp và báo mã trùng; Yes nạp sinh viên đã có.
+4. Sau Làm mới, tra SV000123 trên form trống: nạp thông tin mà không hỏi bỏ bản nháp.
+5. Làm mới hoặc thêm thành công vẫn xóa form. Mã bản ghi đã lưu vẫn khóa khi sửa.

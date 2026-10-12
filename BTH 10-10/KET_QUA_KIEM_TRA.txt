@@ -1,0 +1,15 @@
+KẾT QUẢ KIỂM TRA
+
+Phiên bản ứng dụng: v3
+.NET SDK: 8.0.425
+
+Build solution ở cấu hình Release:
+- Thành công.
+- 0 cảnh báo, 0 lỗi.
+
+Kiểm thử Entity, DataAccess và Business:
+- 41 trường hợp đạt.
+
+Phạm vi:
+- Các kết quả trên không bao gồm kiểm thử giao diện Windows Forms trên Windows.
+- Thực hiện thêm các kịch bản trong HUONG_DAN_KIEM_THU.md để kiểm tra tương tác giao diện.
