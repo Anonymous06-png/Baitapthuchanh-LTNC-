@@ -7,9 +7,9 @@ internal static class Program
     private static void Main()
     {
         ApplicationConfiguration.Initialize();
-        var data = new DataList();
-        var lopDal = new LopHocDAL(data);
-        var svDal = new SinhVienDAL(data);
+        // Nguồn dữ liệu thật: SQL Server (QuanLySinhVienDB) qua ADO.NET.
+        var lopDal = new LopHocDAL(Db.ConnectionString);
+        var svDal = new SinhVienDAL(Db.ConnectionString);
         Application.Run(new MainForm(new SinhVienBUL(svDal, lopDal), new LopHocBUL(lopDal)));
     }
 }
