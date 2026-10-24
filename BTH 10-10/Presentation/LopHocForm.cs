@@ -1,5 +1,4 @@
 using System.Drawing;
-using Microsoft.Data.SqlClient;
 using QuanLySinhVien.Business;
 using QuanLySinhVien.Entity;
 namespace QuanLySinhVien.Presentation;
@@ -48,7 +47,6 @@ public sealed class LopHocForm : Form
             if (MessageBox.Show("Bạn có chắc muốn xóa lớp này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
             try { business.DeleteLopHoc(txtMa.Text); RefreshList(); Reset(); }
             catch (InvalidOperationException ex) { MessageBox.Show(ex.Message, "Không thể xóa"); }
-            catch (SqlException) { DatabaseError.ThongBao(); }
         };
         grid.CellClick += (_, e) =>
         {
@@ -80,17 +78,12 @@ public sealed class LopHocForm : Form
                 }
         }
         catch (InvalidOperationException ex) { MessageBox.Show(ex.Message, "Thông báo"); }
-        catch (SqlException) { DatabaseError.ThongBao(); }
     }
     private void RefreshList()
     {
-        try
-        {
-            grid.DataSource = business.GetAllLopHoc().Select(l => new LopView { MaLop = l.MaLop, TenLop = l.TenLop, SiSo = l.DanhSachSinhVien.Count }).ToList();
-            grid.Columns["MaLop"].HeaderText = "Mã lớp"; grid.Columns["TenLop"].HeaderText = "Tên lớp"; grid.Columns["SiSo"].HeaderText = "Sĩ số";
-            grid.ClearSelection();
-        }
-        catch (SqlException) { DatabaseError.ThongBao(); }
+        grid.DataSource = business.GetAllLopHoc().Select(l => new LopView { MaLop = l.MaLop, TenLop = l.TenLop, SiSo = l.DanhSachSinhVien.Count }).ToList();
+        grid.Columns["MaLop"].HeaderText = "Mã lớp"; grid.Columns["TenLop"].HeaderText = "Tên lớp"; grid.Columns["SiSo"].HeaderText = "Sĩ số";
+        grid.ClearSelection();
     }
     private void Reset()
     {

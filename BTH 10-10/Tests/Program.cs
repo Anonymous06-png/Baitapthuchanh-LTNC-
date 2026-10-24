@@ -2,7 +2,8 @@ using QuanLySinhVien.Business;
 using QuanLySinhVien.DataAccess;
 using QuanLySinhVien.Entity;
 
-var ld = new LopHocDAL(Db.ConnectionString); var sd = new SinhVienDAL(Db.ConnectionString);
+var data = new DataList();
+var ld = new LopHocDAL(data); var sd = new SinhVienDAL(data);
 var lop = new LopHocBUL(ld); var sv = new SinhVienBUL(sd, ld);
 int passed = 0;
 void Check(bool ok, string title) { if (!ok) throw new Exception("FAIL: " + title); Console.WriteLine("PASS: " + title); passed++; }

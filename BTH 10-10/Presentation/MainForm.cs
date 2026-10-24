@@ -1,13 +1,12 @@
 using System.Drawing;
 using System.Globalization;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Data.SqlClient;
 using QuanLySinhVien.Business;
 using QuanLySinhVien.Entity;
 namespace QuanLySinhVien.Presentation;
 
 // Chỉ tạo control, đọc/hiển thị dữ liệu, bắt sự kiện và gọi Business.
-// Không truy cập DAL/database trực tiếp và không tự thêm/sửa/xóa Entity.
+// Không chứa DataList, không truy cập DAL và không tự thêm/sửa/xóa Entity.
 public sealed class MainForm : Form
 {
     private readonly SinhVienBUL svBUL;
@@ -56,7 +55,7 @@ public sealed class MainForm : Form
     }
     private void DangKySuKien()
     {
-        Load += (_, _) => { try { NapComboLop(); cboTrangThai.Items.AddRange(new object[] { "Đang học", "Bảo lưu", "Đã tốt nghiệp" }); TaiDanhSachLop(); } catch (SqlException) { DatabaseError.ThongBao(); } LamMoiForm(); };
+        Load += (_, _) => { NapComboLop(); cboTrangThai.Items.AddRange(new object[] { "Đang học", "Bảo lưu", "Đã tốt nghiệp" }); TaiDanhSachLop(); LamMoiForm(); };
         txtMaSV.Leave += (_, _) => TraCuuMa();
         txtMaSV.Enter += (_, _) => txtMaSV.SelectAll();
         txtMaSV.KeyDown += (_, e) =>
@@ -69,7 +68,7 @@ public sealed class MainForm : Form
         FormClosing += (_, e) =>
         {
             if (e.CloseReason != CloseReason.UserClosing) return;
-            e.Cancel = MessageBox.Show("Bạn có muốn thoát không?",
+            e.Cancel = MessageBox.Show("Bạn có muốn thoát không? Dữ liệu DataList của lần chạy này sẽ không được lưu.",
                 "Xác nhận đóng", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                 MessageBoxDefaultButton.Button2) != DialogResult.Yes;
         };
@@ -82,12 +81,8 @@ public sealed class MainForm : Form
         dgvSinhVien.CellClick += (_, e) =>
         {
             if (e.RowIndex < 0 || dgvSinhVien.Rows[e.RowIndex].DataBoundItem is not SinhVienView row) return;
-            try
-            {
-                var sv = svBUL.GetSinhVienByMaSV(row.MaSV);
-                if (sv != null) HienThiSinhVienLenForm(sv);
-            }
-            catch (SqlException) { DatabaseError.ThongBao(); }
+            var sv = svBUL.GetSinhVienByMaSV(row.MaSV);
+            if (sv != null) HienThiSinhVienLenForm(sv);
         };
         cboLocLop.SelectedIndexChanged += (_, _) => { if (!dangNapCombo) TaiDanhSachLop(); };
         // SelectedIndexChanged như mẫu, có guard khi đang nạp DataSource.
@@ -130,20 +125,15 @@ public sealed class MainForm : Form
             cboLocLop.DataSource = filters;
             cboLocLop.SelectedValue = filters.Any(l => l.MaLop == selectedFilter) ? selectedFilter : "";
         }
-        catch (SqlException) { DatabaseError.ThongBao(); }
         finally { dangNapCombo = false; }
     }
     private string MaLopLoc() => (cboLocLop.SelectedItem as LopHoc)?.MaLop ?? "";
     private void TaiDanhSachLop()
     {
         string ma = MaLopLoc();
-        try
-        {
-            var list = ma.Length == 0 ? svBUL.GetAllSinhVien() : svBUL.GetSinhVienByMaLop(ma);
-            duLieuDaTai = list.Select(ToView).ToList();
-            HienThiDanhSach(duLieuDaTai);
-        }
-        catch (SqlException) { DatabaseError.ThongBao(); }
+        var list = ma.Length == 0 ? svBUL.GetAllSinhVien() : svBUL.GetSinhVienByMaLop(ma);
+        duLieuDaTai = list.Select(ToView).ToList();
+        HienThiDanhSach(duLieuDaTai);
     }
     private void TraCuuMa()
     {
@@ -151,9 +141,7 @@ public sealed class MainForm : Form
         string ma = txtMaSV.Text.Trim().ToUpperInvariant();
         if (maDaTraCuu == ma) return;
         maDaTraCuu = ma;
-        SinhVien? sv;
-        try { sv = svBUL.GetSinhVienByMaSV(ma); }
-        catch (SqlException) { maDaTraCuu = null; DatabaseError.ThongBao(); return; }
+        var sv = svBUL.GetSinhVienByMaSV(ma);
         if (sv != null)
         {
             // Không ghi đè bản nháp khi người dùng đang thêm và đổi mã sang mã có sẵn.
@@ -209,9 +197,7 @@ public sealed class MainForm : Form
     {
         errors.Clear();
         bool diemDocDuoc = DocSinhVienTuForm(out var sv);
-        List<ValidationResult> loi;
-        try { loi = svBUL.KiemTraDuLieu(sv, sua); }
-        catch (SqlException) { DatabaseError.ThongBao(); return; }
+        var loi = svBUL.KiemTraDuLieu(sv, sua);
         if (!diemDocDuoc)
         {
             loi.RemoveAll(e => e.MemberNames.Contains(nameof(SinhVien.Diem)));
@@ -228,7 +214,6 @@ public sealed class MainForm : Form
         }
         catch (BusinessValidationException ex) { HienThiLoi(ex); }
         catch (InvalidOperationException ex) { ThongBaoCanhBao(ex.Message); }
-        catch (SqlException) { DatabaseError.ThongBao(); }
     }
     private void HienThiLoi(BusinessValidationException ex)
     {
@@ -259,7 +244,6 @@ public sealed class MainForm : Form
         if (MessageBox.Show("Bạn có chắc muốn xóa sinh viên này?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
         try { svBUL.DeleteSinhVien(txtMaSV.Text); TaiDanhSachLop(); LamMoiForm(); }
         catch (InvalidOperationException ex) { ThongBaoCanhBao(ex.Message); }
-        catch (SqlException) { DatabaseError.ThongBao(); }
     }
     private void HienThiSinhVienLenForm(SinhVien sv)
     {
@@ -291,12 +275,8 @@ public sealed class MainForm : Form
     {
         if (rdoTimNguon.Checked)
         {
-            try
-            {
-                duLieuDaTai = svBUL.TimKiemTaiNguon(MaLopLoc(), txtTuKhoa.Text, nudDiemTu.Value).Select(ToView).ToList();
-                HienThiDanhSach(duLieuDaTai);
-            }
-            catch (SqlException) { DatabaseError.ThongBao(); }
+            duLieuDaTai = svBUL.TimKiemTaiNguon(MaLopLoc(), txtTuKhoa.Text, nudDiemTu.Value).Select(ToView).ToList();
+            HienThiDanhSach(duLieuDaTai);
         }
         else
         {
@@ -443,7 +423,7 @@ public sealed class MainForm : Form
         searchLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
         khungTim.Controls.Add(searchLayout);
         var modes = new FlowLayoutPanel { Dock = DockStyle.Fill, WrapContents = false };
-        rdoTimNguon = new RadioButton { Text = "Tìm tại nguồn dữ liệu (qua Business → DAL)", Checked = true, AutoSize = true };
+        rdoTimNguon = new RadioButton { Text = "Tìm tại nguồn DataList (qua Business → DAL)", Checked = true, AutoSize = true };
         rdoTimGiaoDien = new RadioButton { Text = "Tìm trên danh sách đã tải lên giao diện", AutoSize = true };
         modes.Controls.AddRange(new Control[] { rdoTimNguon, rdoTimGiaoDien });
         searchLayout.Controls.Add(modes, 0, 0);
